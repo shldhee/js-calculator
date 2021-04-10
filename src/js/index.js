@@ -40,13 +40,11 @@ class Calculator {
     const value = target.textContent
     const selector = new Type(value, className)
 
-    console.log('selector :', selector);
-
     if(selector.type === 'digit') {
       if(this.digits.length === 0) {
         if(selector.value == 0) return
       }
-      if(this.digits.length === 3) {
+      if(this.digits.length >= 3) {
         alert('숫자는 세 자리까지만 입력 가능합니다!')
         return
       }
@@ -66,13 +64,18 @@ class Calculator {
       this.digits = []
 
       if(selector.value === '=') {
-        console.log(this.totalExpression)
         const index = this.totalExpression.findIndex(({type}) => type === 'operation')
         const firstNumber = this.stringTotalExpression.slice(0,index)
         const secondNumber = this.stringTotalExpression.slice(index+1)
-        console.log(firstNumber, secondNumber, this.totalExpression[index].expression)
-        console.log(this.calculate(this.totalExpression[index].expression, firstNumber, secondNumber))
+        const result = this.calculate(this.totalExpression[index].expression, firstNumber, secondNumber)
         // 다시 결과값을 배열로 변경하고 type digit로 하고 totalExpression에 넣는다.
+        this.totalExpression = result.split('').map((number) => ({
+          value: number,
+          type: 'digit'
+        }))
+        this.digits = this.totalExpression
+        this.convertToStringTotalExpression()
+        document.querySelector('#total').textContent = this.stringTotalExpression
         return
       }
       this.totalExpression.push(selector)
@@ -84,16 +87,18 @@ class Calculator {
   }
   run() {
     this.init();
-    console.log('run')
   }
   convertToStringTotalExpression() {
     this.stringTotalExpression = this.totalExpression.length === 0 ? '0' : this.totalExpression.map(({value}) => value).join('')
   }
   calculate(expression, first, second) {
     const obj = {
-      'plus': Number(first) + Number(second)
+      'plus': Number(first) + Number(second),
+      'multiply': Number(first) * Number(second),
+      'divide': Number(first) / Number(second),
+      'minus': Number(first) - Number(second)
     }
-    return obj[expression]
+    return String(Math.floor(obj[expression]))
   }
 }
 

@@ -22,7 +22,7 @@ class Type {
       }
     }
   }
-}// @ts-nocheck
+}
 class Calculator {
   constructor() {
     this.digits = []
@@ -74,19 +74,19 @@ class Calculator {
           type: 'digit'
         }))
         this.digits = this.totalExpression
-        this.convertToStringTotalExpression()
-        document.querySelector('#total').textContent = this.stringTotalExpression
+        this.renderResult();
         return
       }
       this.totalExpression.push(selector)
     }
-
-    this.convertToStringTotalExpression()
-    document.querySelector('#total').textContent = this.stringTotalExpression
-
+    this.renderResult();
   }
   run() {
     this.init();
+  }
+  renderResult() {
+    this.convertToStringTotalExpression()
+    document.querySelector('#total').textContent = this.stringTotalExpression
   }
   convertToStringTotalExpression() {
     this.stringTotalExpression = this.totalExpression.length === 0 ? '0' : this.totalExpression.map(({value}) => value).join('')
